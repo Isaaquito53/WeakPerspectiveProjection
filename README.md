@@ -2,9 +2,8 @@
 This project is a demo of a weak perspective projection engine, made in C++ using SDL lib.
 
 ## Preview:
-<video controls autoplay name="media">
-  <source src="./multimedia/demo_v0-1.mp4" type="video/mp4">
-</video>
+![]("./multimedia/demo_v0-1.mp4")
+
 
 ---
 ## How to run:
