@@ -2,7 +2,7 @@
 This project is a demo of a weak perspective projection engine, made in C++ using SDL lib.
 
 ## Preview:
-![]("./multimedia/demo_v0-1.mp4")
+![](./multimedia/demo_v0-1.mp4)
 
 
 ---
