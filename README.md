@@ -7,8 +7,11 @@ https://github.com/user-attachments/assets/4b19b335-3228-41df-a189-19e50d33c337
 ---
 ## How to run:
 You must have SDL3 installed.
+<br/>
 Make sure that you have all the .hpp, .cpp and SDL3.dll files.
+<br/>
 It is recommended to manage all the files with Visual Stuido.
+<br/>
 **If you want to run a .exe, make sure that you have the SDL3.dll file inside the same folder.**
 
 ---
