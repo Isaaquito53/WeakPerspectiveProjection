@@ -45,7 +45,6 @@ void Face::UpdateScreenPoints(PointD2D cam, PointD2D F1, PointD2D F2, int axis, 
 				M2[0][0] * N[0] + M2[0][1] * N[1],
 				M2[1][0] * N[0] + M2[1][1] * N[1]
 			};
-
 			
 		}
 		else

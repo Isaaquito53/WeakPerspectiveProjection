@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <iostream>
+#include <string>
 #include "Figures.hpp"
 
 // SQUARE:
@@ -50,21 +51,32 @@ Figure fig1({ face1, face2 });
 
 int main() {
 	bool run = true;
+	// time vars
+	int lastTime = 0, currentTime, frames = 0, fps = 60;
 	// F1 and F2 are the two points of the screen cone
-	PointD2D F1(0, 0);
-	PointD2D F2(WINDOW_WIDTH, 0);
+	PointD2D F(0, 0);
+	PointD2D FX(WINDOW_WIDTH, 0);
+	PointD2D FY(WINDOW_HEIGHT, 0);
 	// FOV is the distance between the camera and the "screen"
 	int FOV = 10;
-	PointD2D cam(WINDOW_WIDTH / 2, -FOV);
+	PointD2D camX(WINDOW_WIDTH / 2, -FOV);
+	PointD2D camY(WINDOW_HEIGHT / 2, -FOV);
 
-	fig1.UpdateScreenFaces(cam, F1, F2, 0, 0);		// 4th parameter --> axis (0=X, 1=Y)
-	fig1.UpdateScreenFaces(cam, F1, F2, 1, 0);
+	fig1.UpdateScreenFaces(camX, F, FX, 0, 0);		// 4th parameter --> axis (0=X, 1=Y)
+	fig1.UpdateScreenFaces(camY, F, FY, 1, 0);
 
 	SDL_Event e;
 	static SDL_Window* window = NULL;
 	static SDL_Renderer* renderer = NULL;
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_CreateWindowAndRenderer("Demo", WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+
+	SDL_Surface* surf = SDL_LoadBMP("../imgs/texture.bmp");
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surf);
+	SDL_DestroySurface(surf);
+	
+	SDL_FRect crop = { .0f, .0f, WINDOW_WIDTH, WINDOW_HEIGHT };
+	SDL_FRect dest = { .0f, .0f, WINDOW_WIDTH/2, WINDOW_HEIGHT/2 };
 
 	while(run){
 		// MANAGE EVENTS
@@ -77,42 +89,47 @@ int main() {
 			if (e.type == SDL_EVENT_KEY_DOWN) {
 				// GO RIGHT
 				if (e.key.scancode == SDL_SCANCODE_KP_3) {
-					fig1.UpdateScreenFaces(cam, F1, F2, 0, -10);
+					fig1.UpdateScreenFaces(camX, F, FX, 0, -10);
 				}
 				// GO LEFT
 				if (e.key.scancode == SDL_SCANCODE_KP_1) {
-					fig1.UpdateScreenFaces(cam, F1, F2, 0, 10);
+					fig1.UpdateScreenFaces(camX, F, FX, 0, 10);
 				}
 				// GO DOWN
 				if (e.key.scancode == SDL_SCANCODE_KP_4) {
-					fig1.UpdateScreenFaces(cam, F1, F2, 1, 10);
+					fig1.UpdateScreenFaces(camY, F, FY, 1, 10);
 				}
 				// GO UP
 				if (e.key.scancode == SDL_SCANCODE_KP_6) {
-					fig1.UpdateScreenFaces(cam, F1, F2, 1, -10);
+					fig1.UpdateScreenFaces(camY, F, FY, 1, -10);
 				}
 				// WALK BACKWARDS
 				if (e.key.scancode == SDL_SCANCODE_KP_2) {
-					if (FOV < 20) {
+					if (FOV < 50) {
 						FOV++;
-						cam.SetXY(cam.GetX(), -FOV);
-						fig1.UpdateScreenFaces(cam, F1, F2, 0, 0);
-						fig1.UpdateScreenFaces(cam, F1, F2, 1, 0);
+						camX.SetXY(camX.GetX(), -FOV);
+						camY.SetXY(camY.GetX(), -FOV);
+						fig1.UpdateScreenFaces(camX, F, FX, 0, 0);
+						fig1.UpdateScreenFaces(camY, F, FY, 1, 0);
 					}
 				}
 				// WALK 
 				if (e.key.scancode == SDL_SCANCODE_KP_5) {
 					if (FOV > 9) {
 						FOV--;
-						cam.SetXY(cam.GetX(), -FOV);
-						fig1.UpdateScreenFaces(cam, F1, F2, 0, 0);
-						fig1.UpdateScreenFaces(cam, F1, F2, 1, 0);
+						camX.SetXY(camX.GetX(), -FOV);
+						camY.SetXY(camY.GetX(), -FOV);
+						fig1.UpdateScreenFaces(camX, F, FX, 0, 0);
+						fig1.UpdateScreenFaces(camY, F, FY, 1, 0);
 					}
 				}
 			}
 		}
 		SDL_SetRenderDrawColorFloat(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
+		// Render background texture
+		SDL_RenderTexture(renderer, texture, &crop, &dest);
+
 		SDL_SetRenderDrawColorFloat(renderer, 255,255,255, 255);
 		SDL_SetRenderScale(renderer, 4, 4);
 		// For each face of the figure
@@ -145,6 +162,19 @@ int main() {
 				fig1.m_faces[0].m_screenP[i][0][0], fig1.m_faces[0].m_screenP[i][1][0],
 				fig1.m_faces[1].m_screenP[i][0][0], fig1.m_faces[1].m_screenP[i][1][0]);
 		}
+
+		// Manage time (FPSs):
+		frames++;
+		currentTime = SDL_GetTicks();
+		if (currentTime > lastTime + 1000) {
+			fps = frames;
+			frames = 0;
+			lastTime = currentTime;
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		SDL_SetRenderScale(renderer, 2, 2);
+		SDL_RenderDebugText(renderer, 5, 5, to_string(fps).c_str());
+
 		SDL_RenderPresent(renderer);
 	}
 

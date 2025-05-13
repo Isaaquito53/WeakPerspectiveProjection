@@ -12,7 +12,7 @@ Make sure that you have all the .hpp, .cpp and SDL3.dll files.
 <br/>
 It is recommended to manage all the files with Visual Stuido.
 <br/>
-**If you want to run a .exe, make sure that you have the SDL3.dll file inside the same folder.**
+**If you want to run a .exe, make sure that you have the SDL3.dll file and the textures folder inside the same folder.**
 
 ---
 ## Controls (All numpad controls):
@@ -23,6 +23,10 @@ It is recommended to manage all the files with Visual Stuido.
 - 5: Walk forward
 - 6: Move down
 - **You can't rotate the camera**
+
+---
+## Changelog:
+- [v0-2]: Adding background texture.
 
 ---
 ### Learn more about Weak perspective projection:
